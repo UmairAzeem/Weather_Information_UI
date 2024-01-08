@@ -1,0 +1,16 @@
+@media screen and (max-width: 600px) {
+    table {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
+    th, td {
+        white-space: nowrap;
+    }
+}
+
+.country-link {
+    text-decoration: underline;
+    cursor: pointer;
+    color: blue;
+}

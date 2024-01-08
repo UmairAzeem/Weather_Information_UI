@@ -1,0 +1,179 @@
+<section class="py-5 border-bottom">
+    <div class="container px-5 my-5 px-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bolder">{{countryName}} Cities List</h2>
+            <p class="lead mb-0">Weather Updates</p>
+        </div>
+        <div class="row gx-5 justify-content-center">
+            <div class="col-md-12 mb-3">
+                <button class="btn btn-primary" (click)="openCityModal(cityModal)">Add City</button>
+            </div>
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th scope="col">City</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Continent</th>
+                        <th scope="col">Country Population</th>
+                        <th scope="col">Iso2</th>
+                        <th scope="col">Iso3</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let city of cityList">
+                        <td>{{city.cityName}}</td>
+                        <td>{{city.countryName}}</td>
+                        <td>{{city.continent}}</td>
+                        <td>{{city.countryPopulation}}</td>
+                        <td>{{city.iso2}}</td>
+                        <td>{{city.iso3}}</td>
+                        <td>{{city.countryCode}}</td>
+                        <td>
+                          <button class="btn btn-primary action-btn" (click)="getWeatherCondition(city.cityId, weatherConditionModal)">Weather</button>
+                          <button class="btn btn-primary action-btn" (click)="getWeatherHistory(city.cityId, weatherLogsModal)">History</button>
+                          <button class="btn btn-primary action-btn" (click)="getCityDataById(city.cityId, cityModal)">Edit</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<ng-template #cityModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">City Form</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" name="cityId" [(ngModel)]="cityInfo.cityId">
+      <div class="form-group row mb-3">
+        <label for="countryList" class="col-sm-4 col-form-label">Select Country</label>
+        <div class="col-sm-8">
+          <select class="form-control" id="countryList" name="countryId" [(ngModel)]="cityInfo.countryId">
+            <option *ngFor="let country of countryDropdown" [value]="country.countryId">{{country.countryName}}</option>
+            </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="cityName" class="col-sm-4 col-form-label">City Name</label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" id="cityName" name="cityName" [(ngModel)]="cityInfo.cityName" placeholder="City">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" [disabled]="isSaveButtonDisabled" (click)="saveCityInfo()">Save</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #weatherConditionModal let-modal>
+    <div class="modal-body">
+      <div class="row close-btn">
+        <button type="button" class="btn btn-secondary" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row">
+        <div class="col-md-6 weather-popup-heading">
+          <h1>{{weatherInfo.cityName}} Weather Condition</h1>
+        </div>
+        <div class="col-md-6  weather-popup-icon">
+          <img src="{{weatherInfo.icon}}" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <p class="weather-info-p">Temp °C</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.tempC}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="weather-info-p">Temp °F</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.tempF}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="weather-info-p">Last Update</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.lastUpdate}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="weather-info-p">Humidity</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.humidity}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="weather-info-p">Wind Kph</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.windKph}}</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <p class="weather-info-p">Wind Direction</p>
+          <div class="weather-info-div">
+            <p>{{weatherInfo.windDir}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" [disabled]="isSaveButtonDisabled" (click)="saveWeatherInfo()">Save Information</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
+
+
+  <ng-template #weatherLogsModal let-modal>
+    <div class="modal-body">
+      <div class="row close-btn">
+        <button type="button" class="btn btn-secondary" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="row mt-5">
+        <div class="col-md-12">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">City</th>
+                <th scope="col">Icon</th>
+                <th scope="col">Temperature</th>
+                <th scope="col">Humidity</th>
+                <th scope="col">Wind Direction</th>
+                <th scope="col">Wind Kph</th>
+                <th scope="col">Last Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let logs of weatherLogsList">
+                <td>{{logs.cityName}}</td>
+                <td><img src="{{logs.icon}}" /></td>
+                <td>{{logs.tempC}} °C<br> {{logs.tempF}} °F</td>
+                <td>{{logs.humidity}}</td>
+                <td>{{logs.windDir}}</td>
+                <td>{{logs.windKph}}</td>
+                <td>{{logs.lastUpdate}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
